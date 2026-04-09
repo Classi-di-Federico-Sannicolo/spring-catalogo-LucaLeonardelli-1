@@ -6,6 +6,9 @@
 </head>
 <body class="container mt-5">
     <h1>Il Mio Catalogo Vini</h1>
+
+    <div th:if="${messaggioEliminazione}" class="alert alert-warning" role="alert" th:text="${messaggioEliminazione}">
+    </div>
     
     <div class="mb-4">
         <a th:href="@{/new}" class="btn btn-success">Aggiungi Nuovo Vino</a>
@@ -17,23 +20,32 @@
         Il catalogo è attualmente vuoto. Aggiungi il primo vino!
     </div>
 
-    <table th:unless="${#lists.isEmpty(listaVini)}" class="table table-striped">
-        <thead>
+    <table th:unless="${#lists.isEmpty(listaVini)}" class="table table-striped align-middle">
+        <thead class="table-dark">
             <tr>
                 <th>Codice</th>
                 <th>Nome</th>
                 <th>Cantina</th>
                 <th>Categoria</th>
                 <th>Anno</th>
-            </tr>
+                <th>Azioni</th> </tr>
         </thead>
         <tbody>
             <tr th:each="v : ${listaVini}">
-                <td th:text="${v.id}"></td>
+                <td>
+                    <a th:href="@{/item/{id}(id=${v.id})}" th:text="${v.id}" class="text-decoration-none"></a>
+                </td>
                 <td th:text="${v.nome}"></td>
                 <td th:text="${v.cantina}"></td>
                 <td th:text="${v.categoria}"></td>
                 <td th:text="${v.anno}"></td>
+                <td>
+                    <a th:href="@{/delete/{id}(id=${v.id})}" 
+                       class="btn btn-sm btn-danger" 
+                       onclick="return confirm('Sei sicuro di voler eliminare questo vino dal catalogo?');">
+                       Elimina
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>

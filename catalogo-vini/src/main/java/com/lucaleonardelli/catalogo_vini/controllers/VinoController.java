@@ -65,4 +65,13 @@ public class VinoController {
 
         return "redirect:/";
     }
+
+    ////////////////// PATH PER ELIMINAZIONE ENTRY
+    @GetMapping("/delete/{id}")
+    public String eliminaVino(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes) {
+        vinoRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("messaggioEliminazione", "Vino eliminato con successo dal catalogo!");
+        
+        return "redirect:/";
+    }
 }
