@@ -6,14 +6,23 @@
 </head>
 <body class="container mt-5">
     <h1>Il Mio Catalogo Vini</h1>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        
+        <div>
+            <a th:href="@{/new}" class="btn btn-success me-2">Aggiungi Nuovo Vino</a>
+            <a th:href="@{/clear}" class="btn btn-danger">Svuota Catalogo</a>
+        </div>
+
+        <form th:action="@{/}" method="get" class="d-flex m-0">
+            <input type="text" name="ricerca" th:value="${valoreRicerca}" class="form-control me-2" placeholder="Cerca vino per nome...">
+            <button type="submit" class="btn btn-outline-success">Cerca</button>
+            <a th:href="@{/}" class="btn btn-outline-secondary ms-2">Cancella</a>
+        </form>
+
+    </div>
 
     <div th:if="${messaggioEliminazione}" class="alert alert-warning" role="alert" th:text="${messaggioEliminazione}">
-    </div>
-    
-    <div class="mb-4">
-        <a th:href="@{/new}" class="btn btn-success">Aggiungi Nuovo Vino</a>
-        
-        <a th:href="@{/clear}" class="btn btn-danger">Svuota Catalogo</a>
     </div>
 
     <div th:if="${#lists.isEmpty(listaVini)}" class="alert alert-info">

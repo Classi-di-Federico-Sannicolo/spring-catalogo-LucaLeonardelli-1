@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.lucaleonardelli.catalogo_vini.domain.Vino;
 import com.lucaleonardelli.catalogo_vini.repositories.VinoRepository;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.util.UUID;
 import java.util.Optional;
@@ -21,16 +24,25 @@ public class VinoController {
     @Autowired
     private VinoRepository vinoRepository;
 
-    ////////////////// HOMEPAGE
+    ////////////////// HOMEPAGE //////////////////
     @GetMapping("/")
-    public String home(Model model) {
-        List<Vino> vini = vinoRepository.findAll();
-        model.addAttribute("listaVini", vini);
+    public String home(Model model, @RequestParam(name = "ricerca", required = false) String search) {
 
+        List<Vino> listaVini;
+        
+        // Ricerca x nome
+        if (search != null && !search.trim().isEmpty()) {
+            listaVini = vinoRepository.findByNomeContainingIgnoreCase(search);
+        } else {
+            listaVini = vinoRepository.findAll();
+        }
+        model.addAttribute("listaVini", listaVini);
+        model.addAttribute("valoreRicerca", search); 
+        
         return "index";
     }
 
-    ////////////////// FORM CREAZIONE
+    ////////////////// FORM CREAZIONE //////////////////
     @GetMapping("/new")
     public String mostraFormAggiunta(Model model) {
         model.addAttribute("vino", new Vino());
@@ -45,7 +57,7 @@ public class VinoController {
         return "redirect:/item/" + vinoSalvato.getId();
     }
 
-    ////////////////// PAGINA DETTAGLIO
+    ////////////////// PAGINA DETTAGLIO //////////////////
     @GetMapping("/item/{id}")
     public String dettaglioVino(@PathVariable("id") UUID id, Model model) {
         Optional<Vino> vinoTrovato = vinoRepository.findById(id);
@@ -58,7 +70,7 @@ public class VinoController {
         }
     }
 
-    ////////////////// PAGINA ELIMINAZIONE
+    ////////////////// PAGINA ELIMINAZIONE //////////////////
     @GetMapping("/clear")
     public String svuotaCatalogo() {
         vinoRepository.deleteAll();
@@ -66,7 +78,7 @@ public class VinoController {
         return "redirect:/";
     }
 
-    ////////////////// PATH PER ELIMINAZIONE ENTRY
+    ////////////////// PATH PER ELIMINAZIONE ENTRY //////////////////
     @GetMapping("/delete/{id}")
     public String eliminaVino(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes) {
         vinoRepository.deleteById(id);
