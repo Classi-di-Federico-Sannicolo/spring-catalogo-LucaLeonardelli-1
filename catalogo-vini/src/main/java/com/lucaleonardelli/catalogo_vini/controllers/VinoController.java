@@ -5,10 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.lucaleonardelli.catalogo_vini.domain.Vino;
 import com.lucaleonardelli.catalogo_vini.repositories.VinoRepository;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.UUID;
+import java.util.Optional;
 import java.util.List;
 
 @Controller
@@ -22,6 +26,7 @@ public class VinoController {
     public String home(Model model) {
         List<Vino> vini = vinoRepository.findAll();
         model.addAttribute("listaVini", vini);
+
         return "index";
     }
 
@@ -29,18 +34,35 @@ public class VinoController {
     @GetMapping("/new")
     public String mostraFormAggiunta(Model model) {
         model.addAttribute("vino", new Vino());
+
         return "form";
     }
     @PostMapping("/new")
-    public String salvaVino(Vino vino) {
-        vinoRepository.save(vino);
-        return "redirect:/";
+    public String salvaVino(Vino vino, RedirectAttributes redirectAttributes) {
+        Vino vinoSalvato = vinoRepository.save(vino);
+        redirectAttributes.addFlashAttribute("messaggioSuccesso", "Vino aggiunto correttamente al catalogo!");
+
+        return "redirect:/item/" + vinoSalvato.getId();
+    }
+
+    ////////////////// PAGINA DETTAGLIO
+    @GetMapping("/item/{id}")
+    public String dettaglioVino(@PathVariable("id") UUID id, Model model) {
+        Optional<Vino> vinoTrovato = vinoRepository.findById(id);
+        
+        if (vinoTrovato.isPresent()) {
+            model.addAttribute("vino", vinoTrovato.get());
+            return "dettaglio";
+        } else {
+            return "redirect:/"; 
+        }
     }
 
     ////////////////// PAGINA ELIMINAZIONE
     @GetMapping("/clear")
     public String svuotaCatalogo() {
         vinoRepository.deleteAll();
+
         return "redirect:/";
     }
 }
