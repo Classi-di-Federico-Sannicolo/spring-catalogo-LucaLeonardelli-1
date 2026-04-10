@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.lucaleonardelli.catalogo_vini.domain.Vino;
 import com.lucaleonardelli.catalogo_vini.repositories.VinoRepository;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Sort;
 
 
 import java.util.UUID;
@@ -26,15 +27,19 @@ public class VinoController {
 
     ////////////////// HOMEPAGE //////////////////
     @GetMapping("/")
-    public String home(Model model, @RequestParam(name = "ricerca", required = false) String search) {
+    public String home( Model model, 
+                        @RequestParam(name = "ricerca", required = false) String search,
+                        @RequestParam(name = "sort", required = false, defaultValue = "nome") String sortField) {
 
         List<Vino> listaVini;
         
+        Sort ordinamento = Sort.by(sortField).ascending();
+
         // Ricerca x nome
         if (search != null && !search.trim().isEmpty()) {
-            listaVini = vinoRepository.findByNomeContainingIgnoreCase(search);
+            listaVini = vinoRepository.findByNomeContainingIgnoreCase(search, ordinamento);
         } else {
-            listaVini = vinoRepository.findAll();
+            listaVini = vinoRepository.findAll(ordinamento);
         }
         model.addAttribute("listaVini", listaVini);
         model.addAttribute("valoreRicerca", search); 
