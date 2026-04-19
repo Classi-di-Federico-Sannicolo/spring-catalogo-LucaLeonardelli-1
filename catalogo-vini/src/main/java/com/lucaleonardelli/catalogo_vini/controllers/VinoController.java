@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -88,6 +89,29 @@ public class VinoController {
     public String eliminaVino(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes) {
         vinoRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("messaggioEliminazione", "Vino eliminato con successo dal catalogo!");
+        
+        return "redirect:/";
+    }
+
+    ////////////////// FORM MODIFICA //////////////////
+    @GetMapping("/modifica/{id}")
+    public String mostraFormModifica(@PathVariable("id") UUID id, Model model) {
+        Optional<Vino> vinoTrovato = vinoRepository.findById(id);
+        
+        if (vinoTrovato.isPresent()) {
+            model.addAttribute("vino", vinoTrovato.get());
+            return "modifica";
+        } else {
+            return "redirect:/"; 
+        }
+    }
+
+    ////////////////// AGGIORNAMENTO ENTRY //////////////////
+    @PostMapping("/aggiorna")
+    public String aggiornaVino(@ModelAttribute Vino vino, RedirectAttributes redirectAttributes) {
+        vinoRepository.save(vino);
+        
+        redirectAttributes.addFlashAttribute("messaggioSuccesso", "Modifiche salvate con successo!");
         
         return "redirect:/";
     }

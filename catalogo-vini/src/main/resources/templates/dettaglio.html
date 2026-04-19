@@ -14,13 +14,21 @@
     <style>
         /* Sfondo e Testi Base */
         body {
-            background: black;
+            background-image: url('/background-foto.jpg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
             color: #f8f9fa;
             font-family: "DM Sans", sans-serif;
             font-optical-sizing: auto;
             font-weight: 400;
             font-style: normal;
             min-height: 100vh;
+            
+            /* Nuove regole Flexbox per la centratura verticale */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         /* Titoli con Font Lussuoso */
@@ -34,6 +42,14 @@
             color: transparent;
         }
 
+        /* Contenitore del titolo con altezza fissa per standardizzare le scatole */
+        .title-wrapper {
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* Font per i nomi dei vini */
         .luxury-font2 {
             font-family: "Playfair Display", serif;
@@ -43,13 +59,15 @@
 
         /* Contenitore stile carta elegante */
         .form-glass-panel {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.65);
             border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 15px;
-            padding: 40px;
+            border-radius: 12px;
+            padding: 40px 40px 50px 40px;
+            width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             position: relative;
         }
 
@@ -116,7 +134,47 @@
         .uuid-value {
             font-family: monospace;
             font-size: 0.8rem;
-            color: #777; /* Colore più tenue per non distrarre */
+            color: #777;
+        }
+
+        /* Menu a tre punti */
+        .menu-dots {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .btn-dots {
+            background: transparent;
+            border: none;
+            color: #d4af37;
+            font-size: 1.5rem;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-dots:hover {
+            color: #FCF6BA;
+        }
+
+        .dropdown-menu-luxury {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 8px 0;
+        }
+
+        .dropdown-menu-luxury .dropdown-item {
+            color: #d4af37;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+        }
+
+        .dropdown-menu-luxury .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.15);
+            color: #FCF6BA;
         }
     </style>
 </head>
@@ -128,13 +186,26 @@
 
     <div class="form-glass-panel mt-2">
         
+        <div class="menu-dots">
+            <div class="dropdown">
+                <button class="btn-dots dropdown-toggle" type="button" id="menuDots" data-bs-toggle="dropdown" aria-expanded="false">
+                    ⋮
+                </button>
+                <ul class="dropdown-menu dropdown-menu-luxury" aria-labelledby="menuDots">
+                    <li><a class="dropdown-item" th:href="@{/modifica/{id}(id=${vino.id})}">Modifica</a></li>
+                    <li><hr class="dropdown-divider" style="border-color: rgba(212, 175, 55, 0.2); margin: 5px 0;"></li>
+                    <li><a class="dropdown-item" th:href="@{/elimina/{id}(id=${vino.id})}" style="color: #ff6b6b;">Elimina</a></li>
+                </ul>
+            </div>
+        </div>
+        
         <div class="text-center mb-4">
             <h2 class="display-4 fw-bold">Dettaglio Bottiglia</h2>
             <hr style="border-color: #d4af37; height: 10px; width: 60px; margin: 15px auto;">
         </div>
 
-        <div class="text-center mb-5">
-            <h3 class="luxury-font2 display-6" th:text="${vino.nome}" style="color: #fff;"></h3>
+        <div class="text-center mb-5 title-wrapper">
+            <h3 class="luxury-font2 display-6 m-0" th:text="${vino.nome}" style="color: #fff;"></h3>
         </div>
 
         <ul class="detail-list mb-5">
@@ -156,11 +227,12 @@
             </li>
         </ul>
 
-        <div class="text-center">
-            <a th:href="@{/}" class="btn btn-gold px-5 py-2 rounded-pill w-100 fs-5">Torna alla Collezione</a>
+        <div class="d-flex justify-content-center mt-5">
+            <a th:href="@{/}" class="btn btn-gold px-5 py-2 rounded-pill">Torna alla Collezione</a>
         </div>
         
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -18,7 +18,10 @@
     <style>
         /* Sfondo e Testi Base */
         body {
-            background: black;
+            background-image: url('/background-foto.jpg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
             color: #f8f9fa;
             /* Nuovo font DM Sans per tutti i testi base */
             font-family: "DM Sans", sans-serif;
@@ -59,6 +62,23 @@
             box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
         }
 
+        /* Pulsante Modifica Lussuoso (Zaffiro/Blu) */
+        .btn-edit-luxury {
+            background: linear-gradient(135deg, #0e3a72, #031c3a, #14529e, #0e3a72);
+            background-size: 300% 300%;
+            border: 1px solid #14529e;
+            color: #f8f9fa !important;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(14, 58, 114, 0.4);
+            transition: all 0.4s ease;
+        }
+        
+        .btn-edit-luxury:hover {
+            background-position: right center;
+            box-shadow: 0 6px 15px rgba(53, 130, 220, 0.6); /* Bagliore azzurro vivo */
+            border-color: #3582dc;
+        }
+
         /* Pulsanti Argento/Scuro per azioni secondarie */
         .btn-silver {
             background: transparent;
@@ -74,19 +94,18 @@
 
         /* Pulsante Pericolo Lussuoso (Svuota/Elimina) */
         .btn-danger-luxury {
-            /* Gradiente allungato per permettere un'animazione fluida */
             background: linear-gradient(135deg, #720e1e, #3a030c, #9e142a, #720e1e);
             background-size: 300% 300%;
             border: 1px solid #9e142a;
-            color: #f8f9fa !important; /* Testo bianco ghiaccio ben leggibile */
+            color: #f8f9fa !important;
             font-weight: 500;
-            box-shadow: 0 4px 10px rgba(114, 14, 30, 0.4); /* Ombra rossa alla base */
-            transition: all 0.4s ease; /* Rende fluido TUTTO: ombra, bordo e movimento dello sfondo */
+            box-shadow: 0 4px 10px rgba(114, 14, 30, 0.4); 
+            transition: all 0.4s ease; 
         }
         
         .btn-danger-luxury:hover {
-            background-position: right center; /* Fa scorrere il gradiente rivelando la parte più chiara */
-            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.6); /* Bagliore rosso vivo che compare dolcemente */
+            background-position: right center; 
+            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.6); 
             border-color: #ff4d4d;
         }
 
@@ -124,7 +143,7 @@
             position: absolute;
             right: 15px;
             top: 4px;
-            color: #c0c0c0; /* Argento di base */
+            color: #c0c0c0;
             font-size: 1.5rem;
             text-decoration: none;
             line-height: 1;
@@ -134,15 +153,15 @@
 
         /* Effetto illuminazione rossa al passaggio del mouse */
         .clear-search:hover {
-            color: #ff4d4d; /* Rosso acceso */
-            text-shadow: 0 0 10px rgba(255, 77, 77, 0.8); /* Alone luminoso */
+            color: #ff4d4d; 
+            text-shadow: 0 0 10px rgba(255, 77, 77, 0.8);
         }
 
         /* Tabella Elegante */
         .table-luxury {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 12px; /* Spazio tra le righe */
+            border-spacing: 0 12px;
             margin-top: 1rem;
         }
         .table-luxury th {
@@ -181,8 +200,8 @@
 
         /* Disabilita l'effetto hover per la riga "Cantina vuota" */
         .table-luxury tr.empty-state-row:hover td {
-            background: rgba(255, 255, 255, 0.04); /* Mantiene lo sfondo base a riposo */
-            cursor: default; /* Assicura che non compaia la manina cliccabile */
+            background: rgba(255, 255, 255, 0.04);
+            cursor: default;
         }
 
 
@@ -204,6 +223,16 @@
             border: 1px solid #d4af37;
             color: #d4af37;
         }
+
+        /* Box trasparente scuro per i contenuti */
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body class="container py-5">
@@ -212,7 +241,7 @@
         
         <div class="text-center mb-5">
             <h1 class="display-1 fw-bold mb-3" style="margin-top: 20px;">Eremo D'Ambra</h1>
-            <p class="lead" style="font-style: italic; opacity: 0.7;">Cantina Vini dal 1840</p>
+            <p class="lead" style="font-style: italic; opacity: 0.7;">Cantina Vini dal 1847</p>
             <br>
             <hr style="border-color: #d4af37; height: 10px; width: 100px; margin: 0 auto;">
         </div>
@@ -276,12 +305,22 @@
                         <td th:text="${vino.categoria}"></td>
                         <td th:text="${vino.anno}"></td>
                         
-                        <td class="text-center">
-                            <a th:href="@{/delete/{id}(id=${vino.id})}" 
-                                class="btn btn-sm btn-danger-luxury rounded-pill px-3" 
-                                onclick="event.stopPropagation(); return confirm('Rimuovere questa bottiglia dalla collezione?');">
-                                Elimina
-                            </a>
+                        <td class="text-center align-middle">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                
+                                <a th:href="@{/modifica/{id}(id=${vino.id})}" 
+                                   class="btn btn-sm btn-edit-luxury rounded-pill px-3"
+                                   onclick="event.stopPropagation();">
+                                    Modifica
+                                </a>
+
+                                <a th:href="@{/delete/{id}(id=${vino.id})}" 
+                                    class="btn btn-sm btn-danger-luxury rounded-pill px-3" 
+                                    onclick="event.stopPropagation(); return confirm('Rimuovere questa bottiglia dalla collezione?');">
+                                    Elimina
+                                </a>
+
+                            </div>
                         </td>
                     </tr>
                     

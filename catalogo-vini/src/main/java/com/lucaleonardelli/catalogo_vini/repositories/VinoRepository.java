@@ -11,5 +11,4 @@ import com.lucaleonardelli.catalogo_vini.domain.Vino;
 public interface VinoRepository extends JpaRepository<Vino, UUID> {
 
     List<Vino> findByNomeContainingIgnoreCase(String nome, Sort sort);
-
 }
