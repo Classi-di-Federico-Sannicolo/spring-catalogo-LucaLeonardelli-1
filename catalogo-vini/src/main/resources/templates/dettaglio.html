@@ -3,234 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <title>Eremo D'Ambra - Dettaglio Vino</title>
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;700&family=Playfair+Display+SC:wght@400;700;900&family=Corinthia&display=swap" rel="stylesheet">
     
     <style>
-        /* Sfondo e Testi Base */
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0f0f0f;
+            --card-color: #1a1a1a;
+        }
+
         body {
-            background-image: url('/background-foto.jpg');
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center;
-            color: #f8f9fa;
-            font-family: "DM Sans", sans-serif;
-            font-optical-sizing: auto;
-            font-weight: 400;
-            font-style: normal;
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at top, #240a0a 0%, #0f0f0f 100%);
+            color: #e0e0e0;
+            font-family: 'DM Sans', sans-serif;
             min-height: 100vh;
-            
-            /* Nuove regole Flexbox per la centratura verticale */
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            align-items: center; 
         }
 
-        /* Titoli con Font Lussuoso */
-        h1, h2, .luxury-font {
-            font-family: "Corinthia", cursive;
-            font-weight: 700;
-            font-style: normal;
-            background: linear-gradient(135deg, #BF953F, #FCF6BA, #b38728, #FBF5B7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        .luxury-title {
+            font-family: 'Playfair Display SC', serif;
+            letter-spacing: 2px;
+            color: var(--gold);
         }
 
-        /* Contenitore del titolo con altezza fissa per standardizzare le scatole */
-        .title-wrapper {
-            min-height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Font per i nomi dei vini */
-        .luxury-font2 {
-            font-family: "Playfair Display", serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        /* Contenitore stile carta elegante */
-        .form-glass-panel {
-            background: rgba(0, 0, 0, 0.65);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 12px;
-            padding: 40px 40px 50px 40px;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-
-        /* Alert Lussuoso (Per il messaggio di successo) */
         .alert-luxury {
             background: rgba(212, 175, 55, 0.1);
-            border: 1px solid #d4af37;
-            color: #d4af37;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            color: var(--gold);
+            border-radius: 15px;
             text-align: center;
+            backdrop-filter: blur(5px);
         }
 
-        /* Pulsanti d'Oro */
-        .btn-gold {
-            background: linear-gradient(135deg, #BF953F, #FCF6BA, #b38728, #FBF5B7);
-            background-size: 200% 200%;
-            color: #121212 !important;
-            font-weight: 600;
-            border: none;
-            transition: all 0.4s ease;
-        }
-        .btn-gold:hover {
-            background-position: right center;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        .form-glass-panel {
+            background: rgba(26, 26, 26, 0.85);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            position: relative;
+            backdrop-filter: blur(15px);
+            overflow: hidden;
         }
 
-        /* --- STILI LISTA DETTAGLI --- */
+        .detail-img-container {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+            padding: 0; 
+            border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: stretch;
+            overflow: hidden;
+        }
+
+        .detail-img {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            object-fit: cover;  
+            object-position: center;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.9)); 
+        }
+
         .detail-list {
             list-style: none;
             padding: 0;
             margin: 0;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            border-radius: 10px;
         }
-        
+
         .detail-list li {
-            padding: 18px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
+
         .detail-list li:last-child {
             border-bottom: none;
         }
 
         .detail-label {
-            color: #d4af37;
-            font-family: Arial, Helvetica, sans-serif;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
             text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1.5px;
-            margin: 0;
+            letter-spacing: 1px;
         }
 
         .detail-value {
-            font-size: 1.1rem;
             color: #fff;
+            font-size: 1.1rem;
             text-align: right;
-            margin: 0;
         }
 
         .uuid-value {
             font-family: monospace;
-            font-size: 0.8rem;
-            color: #777;
+            font-size: 0.85rem;
+            color: var(--gold);
+            opacity: 0.8;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 10px;
+            border-radius: 5px;
         }
 
-        /* Menu a tre punti */
         .menu-dots {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             z-index: 10;
         }
 
-        .btn-dots {
+        #menuDots {
             background: transparent;
+            color: var(--gold);
             border: none;
-            color: #d4af37;
             font-size: 1.5rem;
-            padding: 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            line-height: 1;
+            padding: 5px 15px;
+            border-radius: 50%;
+            transition: 0.3s;
         }
 
-        .btn-dots:hover {
-            color: #FCF6BA;
+        #menuDots:hover {
+            background: rgba(212, 175, 55, 0.1);
         }
 
         .dropdown-menu-luxury {
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            padding: 8px 0;
+            background: #1a1a1a;
+            border: 1px solid var(--gold);
+            border-radius: 15px;
+            margin-top: 10px;
         }
 
-        .dropdown-menu-luxury .dropdown-item {
-            color: #d4af37;
-            transition: all 0.3s ease;
+        .dropdown-item-luxury {
+            color: #ccc;
             padding: 10px 20px;
+            transition: 0.3s;
         }
 
-        .dropdown-menu-luxury .dropdown-item:hover {
-            background: rgba(212, 175, 55, 0.15);
-            color: #FCF6BA;
+        .dropdown-item-luxury:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+            color: #0a0a0a !important; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(135deg, #eadd81 0%, #d4af37 100%);
+            color: #000000 !important;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-gold:active {
+            background: linear-gradient(135deg, #aa8c2c 0%, #8c7221 100%);
+            box-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
         }
     </style>
 </head>
 <body class="container py-5">
 
-    <div th:if="${messaggioSuccesso}" class="alert alert-luxury rounded-3 mx-auto mb-4 shadow-sm" style="max-width: 600px;" role="alert">
-        <strong th:text="${messaggioSuccesso}"></strong>
-    </div>
+    <div class="row justify-content-center w-100 m-0">
+        <div class="col-12 col-xl-10">
 
-    <div class="form-glass-panel mt-2">
-        
-        <div class="menu-dots">
-            <div class="dropdown">
-                <button class="btn-dots dropdown-toggle" type="button" id="menuDots" data-bs-toggle="dropdown" aria-expanded="false">
-                    ⋮
-                </button>
-                <ul class="dropdown-menu dropdown-menu-luxury" aria-labelledby="menuDots">
-                    <li><a class="dropdown-item" th:href="@{/modifica/{id}(id=${vino.id})}">Modifica</a></li>
-                    <li><hr class="dropdown-divider" style="border-color: rgba(212, 175, 55, 0.2); margin: 5px 0;"></li>
-                    <li><a class="dropdown-item" th:href="@{/elimina/{id}(id=${vino.id})}" style="color: #ff6b6b;">Elimina</a></li>
-                </ul>
+            <div th:if="${messaggioSuccesso}" class="alert alert-luxury shadow mb-4" role="alert">
+                <strong th:text="${messaggioSuccesso}"></strong>
             </div>
-        </div>
-        
-        <div class="text-center mb-4">
-            <h2 class="display-4 fw-bold">Dettaglio Bottiglia</h2>
-            <hr style="border-color: #d4af37; height: 10px; width: 60px; margin: 15px auto;">
-        </div>
 
-        <div class="text-center mb-5 title-wrapper">
-            <h3 class="luxury-font2 display-6 m-0" th:text="${vino.nome}" style="color: #fff;"></h3>
-        </div>
+            <div class="form-glass-panel">
+                
+                <div class="menu-dots">
+                    <div class="dropdown">
+                        <button type="button" id="menuDots" data-bs-toggle="dropdown" aria-expanded="false">
+                            ⋮
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-luxury shadow" aria-labelledby="menuDots">
+                            <li><a class="dropdown-item dropdown-item-luxury" th:href="@{/modifica/{id}(id=${vino.id})}">Modifica Bottiglia</a></li>
+                            <li><hr class="dropdown-divider" style="border-color: rgba(212, 175, 55, 0.2); margin: 5px 0;"></li>
+                            <li>
+                                <a class="dropdown-item dropdown-item-luxury" th:href="@{/delete/{id}(id=${vino.id})}" 
+                                   style="color: #ff4757;" onclick="return confirm('Eliminare questa bottiglia?');">
+                                   Elimina Definitivamente
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-        <ul class="detail-list mb-5">
-            <li>
-                <span class="detail-label">Codice UUID</span>
-                <span class="detail-value uuid-value" th:text="${vino.id}"></span>
-            </li>
-            <li>
-                <span class="detail-label">Cantina</span>
-                <span class="detail-value fw-bold" th:text="${vino.cantina}"></span>
-            </li>
-            <li>
-                <span class="detail-label">Categoria</span>
-                <span class="detail-value" th:text="${vino.categoria}"></span>
-            </li>
-            <li>
-                <span class="detail-label">Annata</span>
-                <span class="detail-value" th:text="${vino.anno}"></span>
-            </li>
-        </ul>
+                <div class="row g-0 align-items-stretch">
+                    <div class="col-md-5 detail-img-container d-none d-md-flex">
+                        <img th:if="${vino.categoria == 'Rosso'}" th:src="@{/rosso.png}" class="detail-img" alt="Vino Rosso">
+                        <img th:if="${vino.categoria == 'Bianco'}" th:src="@{/bianco.png}" class="detail-img" alt="Vino Bianco">
+                        <img th:if="${vino.categoria == 'Bollicine'}" th:src="@{/bollicine.png}" class="detail-img" alt="Bollicine">
+                        <img th:if="${vino.categoria == 'Rosato'}" th:src="@{/rosato.png}" class="detail-img" alt="Vino Rosato">
+                        <img th:unless="${vino.categoria == 'Rosso' or vino.categoria == 'Bianco' or vino.categoria == 'Bollicine' or vino.categoria == 'Rosato'}" 
+                             th:src="@{/background-foto.jpg}" class="detail-img" alt="Vino">
+                    </div>
 
-        <div class="d-flex justify-content-center mt-5">
-            <a th:href="@{/}" class="btn btn-gold px-5 py-2 rounded-pill">Torna alla Collezione</a>
+                    <div class="col-md-7 p-4 p-md-5 d-flex flex-column justify-content-center">
+                        
+                        <div class="mb-2">
+                            <span style="font-family: 'Corinthia', cursive; font-size: 2.5rem; color: var(--gold);">Collezione Privata</span>
+                        </div>
+                        
+                        <h2 class="luxury-title display-5 mb-4" th:text="${vino.nome}">Nome Vino</h2>
+
+                        <ul class="detail-list mb-5">
+                            <li>
+                                <span class="detail-label">Codice Identificativo</span>
+                                <span class="detail-value uuid-value" th:text="${vino.id}"></span>
+                            </li>
+                            <li>
+                                <span class="detail-label">Cantina</span>
+                                <span class="detail-value fw-bold text-white" th:text="${vino.cantina}"></span>
+                            </li>
+                            <li>
+                                <span class="detail-label">Categoria</span>
+                                <span class="detail-value" th:text="${vino.categoria}" style="color: var(--gold);"></span>
+                            </li>
+                            <li>
+                                <span class="detail-label">Annata</span>
+                                <span class="detail-value" th:text="${vino.anno}"></span>
+                            </li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
+                            <a th:href="@{/}" class="btn btn-gold px-5 py-3 rounded-pill w-100 d-inline-flex align-items-center justify-content-center shadow">
+                                <span class="fw-bold">Torna alla Collezione</span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
-        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
