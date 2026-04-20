@@ -335,7 +335,7 @@
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4" th:if="${not #lists.isEmpty(listaVini)}">
         <div class="col" th:each="vino : ${listaVini}">
-            <div class="wine-card" th:onclick="|window.location.href='@{/item/{id}(id=${vino.id})}'|" title="Visualizza dettagli">
+            <div class="wine-card" style="cursor: pointer;" th:onclick="|window.location.href='@{/item/{id}(id=${vino.id})}'|" title="Visualizza dettagli">
                 <div class="card-img-container">
                     <span class="category-badge" th:text="${vino.categoria}">Rosso</span>
                     <img th:if="${vino.categoria == 'Rosso'}" th:src="@{/rosso.png}" class="card-img-top" alt="Vino Rosso">
