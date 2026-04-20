@@ -17,73 +17,49 @@ public class DataLoader {
         return args -> {
             if (vinoRepository.count() == 0) {
                 
-                Vino vino1 = new Vino();
-                vino1.setNome("Barolo Riserva Monfortino");
-                vino1.setCantina("Giacomo Conterno");
-                vino1.setCategoria("Rosso");
-                vino1.setAnno(2015);
+                // --- ROSSI ---
+                Vino vino1 = creaVino("Barolo Riserva Monfortino", "Giacomo Conterno", "Rosso", 2015);
+                Vino vino2 = creaVino("Sassicaia", "Tenuta San Guido", "Rosso", 2018);
+                Vino vino3 = creaVino("Amarone Classico", "Giuseppe Quintarelli", "Rosso", 2013);
+                Vino vino4 = creaVino("Brunello di Montalcino Biondi Santi", "Tenuta Greppo", "Rosso", 2012);
 
-                Vino vino2 = new Vino();
-                vino2.setNome("Giulio Ferrari Riserva del Fondatore");
-                vino2.setCantina("Cantine Ferrari");
-                vino2.setCategoria("Bollicine");
-                vino2.setAnno(2008);
+                // --- BIANCHI ---
+                Vino vino5 = creaVino("Cervaro della Sala", "Antinori", "Bianco", 2020);
+                Vino vino6 = creaVino("Vintage Tunina", "Jermann", "Bianco", 2020);
 
-                Vino vino3 = new Vino();
-                vino3.setNome("Cervaro della Sala");
-                vino3.setCantina("Antinori");
-                vino3.setCategoria("Bianco");
-                vino3.setAnno(2020);
+                // --- BOLLICINE ---
+                Vino vino7 = creaVino("Giulio Ferrari Riserva del Fondatore", "Cantine Ferrari", "Bollicine", 2008);
+                Vino vino8 = creaVino("Dom Pérignon Plénitude 2", "Moët & Chandon", "Bollicine", 2003);
 
-                Vino vino4 = new Vino();
-                vino4.setNome("Five Roses Anniversario");
-                vino4.setCantina("Leone de Castris");
-                vino4.setCategoria("Rosato");
-                vino4.setAnno(2022);
+                // --- ROSATI ---
+                Vino vino9 = creaVino("Five Roses Anniversario", "Leone de Castris", "Rosato", 2022);
 
-                Vino vino5 = new Vino();
-                vino5.setNome("Sassicaia");
-                vino5.setCantina("Tenuta San Guido");
-                vino5.setCategoria("Rosso");
-                vino5.setAnno(2018);
+                // --- DOLCI (Novità!) ---
+                Vino vino10 = creaVino("Château d'Yquem", "LVMH", "Dolce", 2017); // Il più famoso Sauternes al mondo
+                Vino vino11 = creaVino("Passito di Pantelleria Ben Ryé", "Donnafugata", "Dolce", 2021);
+                Vino vino12 = creaVino("Tokaji Aszú 6 Puttonyos", "Royal Tokaji", "Dolce", 2016); // "Il vino dei Re" ungherese
 
-                Vino vino6 = new Vino();
-                vino6.setNome("Franciacorta Cuvée Prestige");
-                vino6.setCantina("Ca' del Bosco");
-                vino6.setCategoria("Bollicine");
-                vino6.setAnno(2019);
-
-                Vino vino7 = new Vino();
-                vino7.setNome("Gewürztraminer Nussbaumer");
-                vino7.setCantina("Cantina Tramin");
-                vino7.setCategoria("Bianco");
-                vino7.setAnno(2021);
-
-                Vino vino8 = new Vino();
-                vino8.setNome("Amarone della Valpolicella Classico");
-                vino8.setCantina("Giuseppe Quintarelli");
-                vino8.setCategoria("Rosso");
-                vino8.setAnno(2013);
-
-                Vino vino9 = new Vino();
-                vino9.setNome("Vintage Tunina");
-                vino9.setCantina("Jermann");
-                vino9.setCategoria("Bianco");
-                vino9.setAnno(2020);
-
-                Vino vino10 = new Vino();
-                vino10.setNome("Dom Pérignon Vintage");
-                vino10.setCantina("Moët & Chandon");
-                vino10.setCategoria("Bollicine");
-                vino10.setAnno(2012);
+                // --- FORTIFICATI (Novità!) ---
+                Vino vino13 = creaVino("Marsala Superiore Riserva", "Marco De Bartoli", "Fortificato", 1987);
+                Vino vino14 = creaVino("Porto Vintage", "Graham's", "Fortificato", 2000);
 
                 vinoRepository.saveAll(List.of(
-                    vino1, vino2, vino3, vino4, vino5, 
-                    vino6, vino7, vino8, vino9, vino10
+                    vino1, vino2, vino3, vino4, vino5, vino6, vino7, 
+                    vino8, vino9, vino10, vino11, vino12, vino13, vino14
                 ));
                 
-                System.out.println("Cantina inizializzata con le bottiglie di default!");
+                System.out.println("Eremo D'Ambra: Cantina popolata con 14 eccellenze mondiali!");
             }
         };
+    }
+
+    // Metodo helper per velocizzare la creazione degli oggetti senza ripetere tutto il codice
+    private Vino creaVino(String nome, String cantina, String categoria, int anno) {
+        Vino v = new Vino();
+        v.setNome(nome);
+        v.setCantina(cantina);
+        v.setCategoria(categoria);
+        v.setAnno(anno);
+        return v;
     }
 }

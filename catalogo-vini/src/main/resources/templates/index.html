@@ -342,7 +342,9 @@
                     <img th:if="${vino.categoria == 'Bianco'}" th:src="@{/bianco.png}" class="card-img-top" alt="Vino Bianco">
                     <img th:if="${vino.categoria == 'Bollicine'}" th:src="@{/bollicine.png}" class="card-img-top" alt="Bollicine">
                     <img th:if="${vino.categoria == 'Rosato'}" th:src="@{/rosato.png}" class="card-img-top" alt="Vino Rosato">
-                    <img th:unless="${vino.categoria == 'Rosso' or vino.categoria == 'Bianco' or vino.categoria == 'Bollicine' or vino.categoria == 'Rosato'}" 
+                    <img th:if="${vino.categoria == 'Fortificato'}" th:src="@{/fortificato.png}" class="card-img-top" alt="Vino Fortificato">
+                    <img th:if="${vino.categoria == 'Dolce'}" th:src="@{/dolce.png}" class="card-img-top" alt="Vino Dolce">
+                    <img th:unless="${vino.categoria == 'Rosso' or vino.categoria == 'Bianco' or vino.categoria == 'Bollicine' or vino.categoria == 'Rosato' or vino.categoria == 'Fortificato' or vino.categoria == 'Dolce'}" 
                          th:src="@{/background-foto.jpg}" class="card-img-top" alt="Vino">
                 </div>
                 <div class="card-body">

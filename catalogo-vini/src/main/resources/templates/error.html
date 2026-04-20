@@ -8,7 +8,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;700&family=Playfair+Display+SC:wght@400;700;900&family=Corinthia&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;700&family=Playfair+Display+SC:wght@400;700;900&family=Cinzel:wght@700;900&family=Corinthia&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -57,9 +57,10 @@
             z-index: 0;
         }
 
+        /* Il numero 404 con il nuovo font Cinzel */
         .error-number {
-            font-family: 'Playfair Display SC', serif;
-            font-size: 8rem;
+            font-family: 'Cinzel', serif;
+            font-size: 9rem;
             font-weight: 900;
             color: var(--gold);
             line-height: 1;
@@ -110,7 +111,7 @@
                     <span style="font-family: 'Corinthia', cursive; font-size: 3rem; color: #fff; position: relative; z-index: 1;">Bottiglia Non Trovata</span>
                 </div>
                 
-                <h1 class="error-number mt-2 mb-3" th:text="${status ?: 'Errore'}">404</h1>
+                <h1 class="error-number mt-2 mb-3" th:text="${status ?: '404'}">404</h1>
                 
                 <h3 class="luxury-title h4 mb-3" style="position: relative; z-index: 1;">Oops! Qualcosa è andato storto.</h3>
                 
@@ -118,7 +119,7 @@
                     Sembra che tu ti sia perso nella nostra cantina. La pagina che cerchi non esiste o si è verificato un problema tecnico.
                 </p>
                 
-                <a th:href="@{/}" class="btn btn-gold px-5 py-3 rounded-pill shadow d-inline-flex align-items-center justify-content-center">
+                <a th:href="@{/}" class="btn btn-gold px-5 py-3 rounded-pill shadow d-inline-flex align-items-center justify-content-center text-decoration-none">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16">
                       <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
                     </svg>
