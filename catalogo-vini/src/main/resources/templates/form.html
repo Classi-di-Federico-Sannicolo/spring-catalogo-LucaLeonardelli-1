@@ -133,12 +133,12 @@
                     
                     <div class="mb-4">
                         <label class="form-label">Nome del Vino</label>
-                        <input type="text" th:field="*{nome}" class="form-control" required placeholder="Es. Amarone della Valpolicella">
+                        <input type="text" th:field="*{nome}" class="form-control" maxlength="40" required placeholder="Es. Amarone della Valpolicella">
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label">Cantina (Produttore)</label>
-                        <input type="text" th:field="*{cantina}" class="form-control" required placeholder="Es. Masi">
+                        <input type="text" th:field="*{cantina}" class="form-control" maxlength="25" required placeholder="Es. Masi">
                     </div>
 
                     <div class="row">

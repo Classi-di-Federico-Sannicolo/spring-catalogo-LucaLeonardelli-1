@@ -1,118 +1,97 @@
 package com.lucaleonardelli.catalogo_vini.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.lucaleonardelli.catalogo_vini.domain.Vino;
+import com.lucaleonardelli.catalogo_vini.dto.VinoDTO;
+import com.lucaleonardelli.catalogo_vini.payload.APIResponse;
 import com.lucaleonardelli.catalogo_vini.repositories.VinoRepository;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-
-import java.util.UUID;
-import java.util.Optional;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
+@RequestMapping("/api/vini")
 public class VinoController {
 
     @Autowired
     private VinoRepository vinoRepository;
 
-    ////////////////// HOMEPAGE //////////////////
-    @GetMapping("/")
-    public String home( Model model, 
-                        @RequestParam(name = "ricerca", required = false) String search,
-                        @RequestParam(name = "sort", required = false, defaultValue = "nome") String sortField) {
+    // x convertire l'entità in DTO
+    private VinoDTO convertToDTO(Vino vino) {
+        return new VinoDTO(vino.getId(), vino.getNome(), vino.getCantina(), vino.getCategoria(), vino.getAnno());
+    }
 
-        List<Vino> listaVini;
-        
+    // x covertire il DTO in entità
+    private Vino convertToEntity(VinoDTO dto) {
+        return new Vino(dto.getId(), dto.getNome(), dto.getCantina(), dto.getCategoria(), dto.getAnno());
+    }
+
+    @GetMapping
+    public APIResponse<List<VinoDTO>> getAllVini(
+            @RequestParam(name = "ricerca", required = false) String search,
+            @RequestParam(name = "sort", required = false, defaultValue = "nome") String sortField) {
+
         Sort ordinamento = Sort.by(sortField).ascending();
+        List<Vino> listaVini;
 
-        // Ricerca x nome
         if (search != null && !search.trim().isEmpty()) {
             listaVini = vinoRepository.findByNomeContainingIgnoreCase(search, ordinamento);
         } else {
             listaVini = vinoRepository.findAll(ordinamento);
         }
-        model.addAttribute("listaVini", listaVini);
-        model.addAttribute("valoreRicerca", search); 
-        
-        return "index";
+
+        List<VinoDTO> dtos = listaVini.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return APIResponse.success(dtos);
     }
 
-    ////////////////// FORM CREAZIONE //////////////////
-    @GetMapping("/new")
-    public String mostraFormAggiunta(Model model) {
-        model.addAttribute("vino", new Vino());
-
-        return "form";
-    }
-    @PostMapping("/new")
-    public String salvaVino(Vino vino, RedirectAttributes redirectAttributes) {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public APIResponse<VinoDTO> salvaVino(@Valid @RequestBody VinoDTO vinoDTO) {
+        Vino vino = convertToEntity(vinoDTO);
         Vino vinoSalvato = vinoRepository.save(vino);
-        redirectAttributes.addFlashAttribute("messaggioSuccesso", "Vino aggiunto correttamente al catalogo!");
-
-        return "redirect:/item/" + vinoSalvato.getId();
+        return APIResponse.success(convertToDTO(vinoSalvato));
     }
 
-    ////////////////// PAGINA DETTAGLIO //////////////////
-    @GetMapping("/item/{id}")
-    public String dettaglioVino(@PathVariable("id") UUID id, Model model) {
-        Optional<Vino> vinoTrovato = vinoRepository.findById(id);
-        
-        if (vinoTrovato.isPresent()) {
-            model.addAttribute("vino", vinoTrovato.get());
-            return "dettaglio";
-        } else {
-            return "redirect:/"; 
+    @GetMapping("/{id}")
+    public APIResponse<VinoDTO> dettaglioVino(@PathVariable("id") UUID id) {
+        Vino vino = vinoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vino non trovato"));
+        return APIResponse.success(convertToDTO(vino));
+    }
+
+    @PutMapping("/{id}")
+    public APIResponse<VinoDTO> aggiornaVino(@PathVariable("id") UUID id, @Valid @RequestBody VinoDTO vinoDTO) {
+        Vino vinoEsistente = vinoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Impossibile aggiornare: vino non trovato"));
+
+        vinoEsistente.setNome(vinoDTO.getNome());
+        vinoEsistente.setCantina(vinoDTO.getCantina());
+        vinoEsistente.setCategoria(vinoDTO.getCategoria());
+        vinoEsistente.setAnno(vinoDTO.getAnno());
+
+        Vino vinoSalva = vinoRepository.save(vinoEsistente);
+
+        return APIResponse.success(convertToDTO(vinoSalva));
+    }
+
+    @DeleteMapping("/{id}")
+    public APIResponse<String> eliminaVino(@PathVariable("id") UUID id) {
+        if (!vinoRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Impossibile eliminare: vino non trovato");
         }
-    }
-
-    ////////////////// PAGINA ELIMINAZIONE //////////////////
-    @GetMapping("/clear")
-    public String svuotaCatalogo() {
-        vinoRepository.deleteAll();
-
-        return "redirect:/";
-    }
-
-    ////////////////// PATH PER ELIMINAZIONE ENTRY //////////////////
-    @GetMapping("/delete/{id}")
-    public String eliminaVino(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes) {
         vinoRepository.deleteById(id);
-        redirectAttributes.addFlashAttribute("messaggioEliminazione", "Vino eliminato con successo dal catalogo!");
-        
-        return "redirect:/";
+        return APIResponse.success("Vino eliminato con successo dal catalogo!");
     }
 
-    ////////////////// FORM MODIFICA //////////////////
-    @GetMapping("/modifica/{id}")
-    public String mostraFormModifica(@PathVariable("id") UUID id, Model model) {
-        Optional<Vino> vinoTrovato = vinoRepository.findById(id);
-        
-        if (vinoTrovato.isPresent()) {
-            model.addAttribute("vino", vinoTrovato.get());
-            return "modifica";
-        } else {
-            return "redirect:/"; 
-        }
-    }
-
-    ////////////////// AGGIORNAMENTO ENTRY //////////////////
-    @PostMapping("/aggiorna")
-    public String aggiornaVino(@ModelAttribute Vino vino, RedirectAttributes redirectAttributes) {
-        vinoRepository.save(vino);
-        
-        redirectAttributes.addFlashAttribute("messaggioSuccesso", "Modifiche salvate con successo!");
-        
-        return "redirect:/";
+    @DeleteMapping("/clear")
+    public APIResponse<String> svuotaCatalogo() {
+        vinoRepository.deleteAll();
+        return APIResponse.success("Tutti i vini sono stati eliminati dal catalogo!");
     }
 }
