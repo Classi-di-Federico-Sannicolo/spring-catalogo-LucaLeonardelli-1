@@ -6,11 +6,31 @@ services:
       MYSQL_DATABASE: cantina_db
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3306:3306" # mappa la porta del container alla stessa porta
+      - "3306:3306"
     networks:
       - app-network
+    # Questo pezzo dice a Docker di aspettare che MySQL sia pronto prima di avviare Spring
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  # spring-backend:
+  # Sotto il tuo commento, inseriamo il Backend vero e proprio
+  spring-backend:
+    build:
+      dockerfile: Dockerfile     # Nota se il file si chiama 'Dockerfile' con la D maiuscola o minuscola
+    container_name: catalogo_vini_backend
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    volumes:
+      # IL VINCOLO DELLA CONSEGNA: Collega la cartella locale 'logs-produzione' alla cartella dei log nel container
+      - ./logs-produzione:/app/logs
 
 networks:
   app-network:
