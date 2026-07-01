@@ -9,17 +9,16 @@ services:
       - "3306:3306"
     networks:
       - app-network
-    # Questo pezzo dice a Docker di aspettare che MySQL sia pronto prima di avviare Spring
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  # Sotto il tuo commento, inseriamo il Backend vero e proprio
   spring-backend:
     build:
-      dockerfile: Dockerfile     # Nota se il file si chiama 'Dockerfile' con la D maiuscola o minuscola
+      context: .                 # Specifichiamo il contesto corrente
+      dockerfile: Dockerfile     
     container_name: catalogo_vini_backend
     ports:
       - "8080:8080"
@@ -29,8 +28,38 @@ services:
       mysql-db:
         condition: service_healthy
     volumes:
-      # IL VINCOLO DELLA CONSEGNA: Collega la cartella locale 'logs-produzione' alla cartella dei log nel container
       - ./logs-produzione:/app/logs
+
+  # ==========================================
+  # TASK 3: SISTEMA DI MONITORAGGIO (PROMETHEUS)
+  # ==========================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_container
+    ports:
+      - "9090:9090"             # Prometheus risponde sulla porta 9090
+    networks:
+      - app-network
+    volumes:
+      # Monta il file di configurazione locale dentro il container di Prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - spring-backend
+
+  # ==========================================
+  # TASK 3: CABINA DI REGIA VISIVA (GRAFANA)
+  # ==========================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_container
+    ports:
+      - "3000:3000"             # Grafana risponde sulla porta 3000
+    networks:
+      - app-network
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Password di default per accedere a Grafana
+    depends_on:
+      - prometheus
 
 networks:
   app-network:
